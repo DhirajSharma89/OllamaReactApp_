@@ -1,0 +1,44 @@
+.header {
+  /* background-color: #fff; or something */
+  /* remove it or set to transparent */
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  font-family: "Broadway", sans-serif;
+  font-weight: 700;
+}
+
+
+/* Left side container */
+.header__left {
+  display: flex;
+  align-items: center;
+}
+
+
+/* The text "Local Ollama" */
+.header__title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000; /* or some color that looks good on your gradient */
+}
+
+/* Right side nav container */
+.header__nav {
+  display: flex;
+  gap: 1.5rem; /* space between links */
+}
+
+/* Individual links */
+.nav__link {
+  text-decoration: none;
+  font-weight: 700;
+  color: #000; /* adjust if needed */
+  transition: color 0.3s;
+}
+
+.nav__link:hover {
+  color: #444; /* subtle hover effect */
+}

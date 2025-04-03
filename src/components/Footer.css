@@ -1,0 +1,17 @@
+.footer {
+  background-color: #333;
+  padding: 1rem ;
+  text-align: center;
+}
+
+.footer__text {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: none; /* or uppercase if you prefer */
+}
+footer {
+  background: #222; /* Or any color you prefer */
+  position: relative; /* Remove absolute if causing issues */
+}
+
