@@ -1,57 +1,67 @@
 # OllamaReactApp 🚀  
 
-# A full-stack application powered by React.js (frontend) and Python (backend), utilizing Ollama for local AI model execution.
+A full-stack application powered by React.js (frontend) and Python (backend), utilizing Ollama for local AI model execution.
 
 # 📂 Project Structure  
-# OllamaReactApp/
-# ├── frontend/     # React.js frontend
-# ├── backend/      # Python backend
-# ├── .gitignore    # Excluded files
-# ├── README.md     # Project documentation
+OllamaReactApp/
+├── frontend/     # React.js frontend
+├── backend/      # Python backend
+├── .gitignore    # Excluded files
+├── README.md     # Project documentation
 
 # 🛠️ Setup Instructions  
 
-# 🔹 Clone the Repository  
+## Clone all branches of the repository to respective directories  
+```
 git clone https://github.com/DhirajSharma89/OllamaReactApp_.git
 cd OllamaReactApp_
+```
 
-# 🌐 Frontend Setup (React.js)
-# 📌 Install Dependencies  
+## Frontend Setup (React.js)
+### Install Dependencies  
+```
 cd frontend
 npm install
+```
 
-# 🚀 Run the Frontend  
+## Run the Frontend  
+```
 npm run dev
-# The frontend runs at: http://localhost:5173
+```
+The frontend runs at: http://localhost:5173
 
-# 🖥️ Backend Setup (Python & Ollama)
-# 📌 Install Dependencies  
-# Ensure you have Python installed. Then run:
+## Backend Setup (Python & Ollama)
+Install Dependencies  
+Ensure you have Python installed. Then run:
+```
 cd backend
 pip install -r requirements.txt
+```
 
-# 🚀 Run the Backend  
+## Run the Backend  
+```
 python main.py
-# This starts the backend server.
+```
+This starts the backend server.
 
-# 🛠️ .gitignore Config
-# Excluded files:
-# node_modules/
-# .ollama/
-# __pycache__/
-# *.exe
-# *.bat
+
 
 # 🌍 How to Deploy?  
-# 1. Push code to GitHub  
-git push origin frontend
-git push origin backend
+  Set up hosting for frontend (e.g., Vercel, Netlify).  
+  Deploy backend on a server (e.g., AWS, Render, Railway).
 
-# 2. Set up hosting for frontend (e.g., Vercel, Netlify).  
-# 3. Deploy backend on a server (e.g., AWS, Render, Railway).  
+## Demo Screenshots
 
-# 🤝 Contributors
-# - Dhiraj Sharma 🎸 (Lead Developer & Guitarist at ORPHEUS 🤘)  
+![Inference Demo 1](assets/1.jpg)
 
-# 🐝 License  
-# This project is open-source. Feel free to modify and improve it! 🚀  
+![Inference Demo 2](assets/4.jpg)
+---
+
+  
+
+# Contributors
+Dhiraj Sharma 🎸 (Lead Developer & Guitarist at ORPHEUS 🤘)  
+Hillol Borah
+
+# License  
+This project is open-source. Feel free to modify and improve it! 🚀  
