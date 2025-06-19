@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  /* The global gradient background */
+  background: linear-gradient(180deg, #f3f7f3, #5a5656, #0e0f0e);}
+.header-divider {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+  border: none;
+  margin: 4;
+}
+@font-face {
+  font-family: "Robot Italic";
+  src: url("src/assets/fonts/Roboto-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Dune Rise";
+  src: url("/src/assets/fonts/Dune_Rise.ttf") format("truetype");
+}
+
+.header {
+  font-family: "Robot Italic", sans-serif;
+}
+
+.model-name {
+  font-family: "Dune Rise", sans-serif;
+}
