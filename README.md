@@ -60,7 +60,7 @@ This starts the backend server.
   
 
 # Contributors
-Dhiraj Sharma 🎸 (Lead Developer & Guitarist at ORPHEUS 🤘)  
+Dhiraj Sharma
 Hillol Borah
 
 # License  
