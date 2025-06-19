@@ -56,6 +56,10 @@ This starts the backend server.
 
 ![Inference Demo 2](assets/4.jpg)
 ---
+## Project Structure
+we have uploaded all the files in main branch.
+the structure should look like this:
+![image](https://github.com/user-attachments/assets/9e67d190-c7c9-4490-9df8-721bbd8bc3ec)
 
   
 
