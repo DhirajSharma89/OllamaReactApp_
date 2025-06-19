@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MainContent.css";
 import { FaCog } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function MainContent() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -8,9 +9,21 @@ function MainContent() {
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
   const [models, setModels] = useState([]);
+  const [isListening, setIsListening] = useState(false);
+  const [savedPrompts, setSavedPrompts] = useState([]);
+  const sidebarRef = useRef(null);
+  const email = localStorage.getItem("userEmail");
 
+  // Load saved prompts on component mount
   useEffect(() => {
-    // Fetch available models from FastAPI
+    if (email) {
+      const saved = localStorage.getItem(`prompts_${email}`);
+      setSavedPrompts(saved ? JSON.parse(saved) : []);
+    }
+  }, [email]);
+
+  // Fetch models
+  useEffect(() => {
     const fetchModels = async () => {
       try {
         const res = await fetch("http://localhost:8000/models/");
@@ -25,13 +38,45 @@ function MainContent() {
     fetchModels();
   }, []);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  // Dropdown logic
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
   };
 
-  const handleSubmit = async () => {
-    if (!prompt) return;
+  useEffect(() => {
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isDropdownOpen]);
 
+  // Format bot response
+  const formatBotResponse = (text) => {
+    return text
+      .replace(/\n/g, "<br/>")
+      .replace(/• (.*)/g, "<li>$1</li>")
+      .replace(/(?:<li>.*?<\/li>)+/gs, (match) => `<ul>${match}</ul>`)
+      .replace(/``````/g, '<pre>$1</pre>');
+  };
+
+  // Submit prompt and update prompt history
+  const handleSubmit = async () => {
+    if (!prompt.trim()) return;
+
+    // Save prompt to history
+    if (email) {
+      const updatedPrompts = [...savedPrompts, prompt];
+      setSavedPrompts(updatedPrompts);
+      localStorage.setItem(`prompts_${email}`, JSON.stringify(updatedPrompts));
+    }
+
+    // Chat handling
     const userMessage = { text: prompt, sender: "user" };
     setChatHistory((prevChat) => [...prevChat, userMessage]);
 
@@ -39,7 +84,7 @@ function MainContent() {
       const res = await fetch("http://localhost:8000/chat/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, model: selectedModel }),
+        body: JSON.stringify({ prompt, model: selectedModel })
       });
 
       if (!res.ok) {
@@ -48,30 +93,79 @@ function MainContent() {
       }
 
       const data = await res.json();
-      const botMessage = { text: data.response, sender: "bot" };
+      const botMessage = {
+        text: formatBotResponse(data.response), // <-- FIXED: no this.
+        sender: "bot"
+      };
       setChatHistory((prevChat) => [...prevChat, botMessage]);
     } catch (err) {
       console.error("API Error:", err);
-      const errorMessage = { text: "Error: Unable to fetch response.", sender: "bot" };
+      const errorMessage = {
+        text: "<strong>Error:</strong> Unable to fetch response.",
+        sender: "bot"
+      };
       setChatHistory((prevChat) => [...prevChat, errorMessage]);
     }
 
     setPrompt("");
   };
 
+  // Speech recognition
+  const startListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech Recognition not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+    setIsListening(true);
+
+    recognition.onresult = (event) => {
+      const speechToText = event.results[0][0].transcript;
+      setPrompt(speechToText);
+      setIsListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => setIsListening(false);
+  };
+
   return (
     <main className="main-content">
       <div className="settings-container">
         <FaCog className="settings-icon" onClick={toggleDropdown} />
-        {isDropdownOpen && (
-          <div className="dropdown-menu">
-            <ul>
-              <li>Option 1</li>
-              <li>Option 2</li>
-              <li>Option 3</li>
-            </ul>
-          </div>
-        )}
+      </div>
+
+      <div ref={sidebarRef} className={`sidebar ${isDropdownOpen ? "open" : ""}`}>
+        <ul>
+          <li>
+            <Link to="/generate-image" className="nav-link">
+              Generate Images
+            </Link>
+          </li>
+          {email && (
+            <div className="prompt-history">
+              <h4>Your Prompt History</h4>
+              <ul>
+                {savedPrompts.map((savedPrompt, index) => (
+                  <li key={index} className="saved-prompt">
+                    {savedPrompt}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </ul>
       </div>
 
       <div className="model-selector-container">
@@ -101,8 +195,12 @@ function MainContent() {
 
       <div className="chat-container">
         {chatHistory.map((msg, index) => (
-          <div key={index} className={msg.sender === "user" ? "user-message" : "bot-message"}>
-            {msg.text}
+          <div
+            key={index}
+            className={msg.sender === "user" ? "user-message" : "bot-message"}
+            dangerouslySetInnerHTML={msg.sender === "bot" ? { __html: msg.text } : undefined}
+          >
+            {msg.sender === "user" ? msg.text : null}
           </div>
         ))}
       </div>
@@ -117,6 +215,9 @@ function MainContent() {
         />
         <button className="prompt-button" onClick={handleSubmit}>
           Enter
+        </button>
+        <button className="mic-button" onClick={startListening}>
+          {isListening ? "Listening..." : "🎤"}
         </button>
       </div>
     </main>
